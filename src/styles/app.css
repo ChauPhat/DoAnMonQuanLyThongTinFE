@@ -1,0 +1,54 @@
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: transparent;
+}
+
+.page-card {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow:
+    0 12px 30px rgba(15, 23, 42, 0.06),
+    0 1px 0 rgba(255, 255, 255, 0.6) inset;
+}
+
+.page-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.actions-left,
+.actions-right {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.muted {
+  color: var(--el-text-color-secondary);
+}
+
+/* Make Element Plus tables feel less "raw" */
+.page-card :deep(.el-table) {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.page-card :deep(.el-table__header-wrapper th) {
+  background: rgba(2, 6, 23, 0.02);
+}
+
+.page-card :deep(.el-dialog) {
+  border-radius: 16px;
+}
