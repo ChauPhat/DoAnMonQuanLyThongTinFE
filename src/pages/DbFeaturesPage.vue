@@ -14,6 +14,7 @@
             <li><b>sp_themChiTietDatPhong</b>: thêm chi tiết + tính số ngày thuê</li>
             <li><b>sp_traPhong</b>: trả phòng</li>
             <li><b>sp_phongTrong</b>: lấy danh sách phòng trống</li>
+            <li><b>sp_phongDaDat</b>: lấy danh sách phòng đã được đặt trong khoảng thời gian</li>
             <li><b>sp_tinhDoanhThuTheoThang</b>: tổng doanh thu theo tháng/năm</li>
           </ul>
           <div style="margin-top: 8px">

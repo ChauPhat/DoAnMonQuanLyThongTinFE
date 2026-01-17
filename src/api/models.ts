@@ -23,11 +23,32 @@ export type PhongDto = {
   trangThai?: string | null
 }
 
+export type NhanVienDto = {
+  maNv: number
+  tenNv?: string | null
+  vaiTro?: string | null
+  username?: string | null
+}
+
 export type DatPhongRequest = {
   maKh: number
   maNv: number
   ngayNhan: string // LocalDateTime string: yyyy-MM-ddTHH:mm:ss
   ngayTra: string
+}
+
+export type CreateNhanVienRequest = {
+  tenNv: string
+  vaiTro: string
+  username: string
+  password: string
+}
+
+export type UpdateNhanVienRequest = {
+  tenNv?: string | null
+  vaiTro?: string | null
+  username: string
+  password?: string | null
 }
 
 export type ThemChiTietDatPhongRequest = {
@@ -43,4 +64,9 @@ export type TraPhongRequest = {
 export type DoanhThuTheoThangRequest = {
   thang: number
   nam: number
+}
+
+export type PhongDaDatRequest = {
+  tuNgay: string // LocalDateTime string: yyyy-MM-ddTHH:mm:ss
+  denNgay: string
 }

@@ -3,13 +3,14 @@ import type { ApiResponse } from './types'
 import type {
   DatPhongRequest,
   DoanhThuTheoThangRequest,
+  PhongDaDatRequest,
   PhongDto,
   ThemChiTietDatPhongRequest,
   TraPhongRequest,
 } from './models'
 
 export async function procDatPhong(body: DatPhongRequest) {
-  const res = await http.post<ApiResponse<void>>('/api/proc/dat-phong', body)
+  const res = await http.post<ApiResponse<number>>('/api/proc/dat-phong', body)
   return unwrapApiResponse(res.data)
 }
 
@@ -25,6 +26,11 @@ export async function procTraPhong(body: TraPhongRequest) {
 
 export async function procPhongTrong() {
   const res = await http.get<ApiResponse<PhongDto[]>>('/api/proc/phong-trong')
+  return unwrapApiResponse(res.data)
+}
+
+export async function procPhongDaDat(body: PhongDaDatRequest) {
+  const res = await http.post<ApiResponse<PhongDto[]>>('/api/proc/phong-da-dat', body)
   return unwrapApiResponse(res.data)
 }
 

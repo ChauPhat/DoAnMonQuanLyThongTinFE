@@ -7,11 +7,12 @@ import { getErrorMessage } from '../api/http'
 import type {
   DatPhongRequest,
   DoanhThuTheoThangRequest,
+  PhongDaDatRequest,
   ThemChiTietDatPhongRequest,
   TraPhongRequest,
   PhongDto,
 } from '../api/models'
-import { procDatPhong, procDoanhThu, procPhongTrong, procThemChiTiet, procTraPhong } from '../api/procedureApi'
+import { procDatPhong, procDoanhThu, procPhongDaDat, procPhongTrong, procThemChiTiet, procTraPhong } from '../api/procedureApi'
 
 function toLocalDateTimeString(date: Date): string {
   return dayjs(date).format('YYYY-MM-DDTHH:mm:ss')
@@ -19,6 +20,9 @@ function toLocalDateTimeString(date: Date): string {
 
 const loadingPhongTrong = ref(false)
 const phongTrong = ref<PhongDto[]>([])
+
+const loadingPhongDaDat = ref(false)
+const phongDaDat = ref<PhongDto[]>([])
 
 const datPhongForm = reactive<{ maKh: number | null; maNv: number | null; ngayNhan: Date | null; ngayTra: Date | null }>({
   maKh: null,
@@ -43,6 +47,12 @@ const doanhThuForm = reactive<DoanhThuTheoThangRequest>({
 })
 
 const doanhThuValue = ref<number | string | null>(null)
+const lastMaDatPhong = ref<number | null>(null)
+
+const phongDaDatForm = reactive<{ tuNgay: Date | null; denNgay: Date | null }>({
+  tuNgay: null,
+  denNgay: null,
+})
 
 async function runDatPhong() {
   try {
@@ -58,8 +68,11 @@ async function runDatPhong() {
       ngayTra: toLocalDateTimeString(datPhongForm.ngayTra),
     }
 
-    await procDatPhong(body)
-    ElMessage.success('Gọi procedure đặt phòng thành công')
+    const maDatPhong = await procDatPhong(body)
+    lastMaDatPhong.value = maDatPhong
+    themChiTietForm.maDatPhong = maDatPhong
+    traPhongForm.maDatPhong = maDatPhong
+    ElMessage.success(`Đặt phòng thành công. Mã đặt phòng: ${maDatPhong}`)
   } catch (e) {
     ElMessage.error(getErrorMessage(e))
   }
@@ -109,6 +122,32 @@ async function runDoanhThu() {
     ElMessage.error(getErrorMessage(e))
   }
 }
+
+async function runPhongDaDat() {
+  try {
+    if (!phongDaDatForm.tuNgay || !phongDaDatForm.denNgay) {
+      ElMessage.warning('Nhập đủ từ ngày và đến ngày')
+      return
+    }
+
+    if (!(phongDaDatForm.denNgay.getTime() > phongDaDatForm.tuNgay.getTime())) {
+      ElMessage.warning('denNgay phải lớn hơn tuNgay')
+      return
+    }
+
+    const body: PhongDaDatRequest = {
+      tuNgay: toLocalDateTimeString(phongDaDatForm.tuNgay),
+      denNgay: toLocalDateTimeString(phongDaDatForm.denNgay),
+    }
+
+    loadingPhongDaDat.value = true
+    phongDaDat.value = await procPhongDaDat(body)
+  } catch (e) {
+    ElMessage.error(getErrorMessage(e))
+  } finally {
+    loadingPhongDaDat.value = false
+  }
+}
 </script>
 
 <template>
@@ -130,6 +169,9 @@ async function runDoanhThu() {
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="runDatPhong">Gọi procedure</el-button>
+            <el-tag v-if="lastMaDatPhong != null" style="margin-left: 10px" type="success" effect="light">
+              Mã mới: {{ lastMaDatPhong }}
+            </el-tag>
           </el-form-item>
         </el-form>
       </el-tab-pane>
@@ -168,6 +210,28 @@ async function runDoanhThu() {
           <el-button type="primary" @click="loadPhongTrong">Tải danh sách phòng trống</el-button>
         </div>
         <el-table :data="phongTrong" v-loading="loadingPhongTrong" border style="width: 100%">
+          <el-table-column prop="maPhong" label="Mã" width="80" />
+          <el-table-column prop="maLoaiPhong" label="Mã loại" width="100" />
+          <el-table-column prop="tenPhong" label="Tên" min-width="200" />
+          <el-table-column prop="tang" label="Tầng" width="90" />
+          <el-table-column prop="trangThai" label="Trạng thái" width="140" />
+        </el-table>
+      </el-tab-pane>
+
+      <el-tab-pane label="Phòng đã đặt (PROC)">
+        <el-form label-width="160px" style="max-width: 720px">
+          <el-form-item label="Từ ngày (tuNgay)" required>
+            <el-date-picker v-model="phongDaDatForm.tuNgay" type="datetime" format="YYYY-MM-DD HH:mm:ss" />
+          </el-form-item>
+          <el-form-item label="Đến ngày (denNgay)" required>
+            <el-date-picker v-model="phongDaDatForm.denNgay" type="datetime" format="YYYY-MM-DD HH:mm:ss" />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="runPhongDaDat">Tải danh sách phòng đã đặt</el-button>
+          </el-form-item>
+        </el-form>
+
+        <el-table :data="phongDaDat" v-loading="loadingPhongDaDat" border style="width: 100%">
           <el-table-column prop="maPhong" label="Mã" width="80" />
           <el-table-column prop="maLoaiPhong" label="Mã loại" width="100" />
           <el-table-column prop="tenPhong" label="Tên" min-width="200" />

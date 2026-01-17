@@ -18,6 +18,7 @@ const items = [
   { index: '/', label: 'Dashboard', icon: DataAnalysis },
   { index: '/db-features', label: 'Database Features', icon: Collection },
   { index: '/khach-hang', label: 'Khách Hàng', icon: User },
+  { index: '/nhan-vien', label: 'Nhân Viên', icon: User },
   { index: '/loai-phong', label: 'Loại Phòng', icon: OfficeBuilding },
   { index: '/phong', label: 'Phòng', icon: House },
   { index: '/procedure-demo', label: 'Demo Stored Procedure', icon: SetUp },

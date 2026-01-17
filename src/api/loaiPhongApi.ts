@@ -14,6 +14,11 @@ export async function listLoaiPhong(params: { page: number; size: number }) {
   return unwrapApiResponse(res.data)
 }
 
+export async function getLoaiPhong(id: number) {
+  const res = await http.get<ApiResponse<LoaiPhongDto>>(`/api/loai-phong/${id}`)
+  return unwrapApiResponse(res.data)
+}
+
 export async function createLoaiPhong(body: UpsertLoaiPhongRequest) {
   const res = await http.post<ApiResponse<LoaiPhongDto>>('/api/loai-phong', body)
   return unwrapApiResponse(res.data)

@@ -14,6 +14,11 @@ export async function listPhong(params: { page: number; size: number }) {
   return unwrapApiResponse(res.data)
 }
 
+export async function getPhong(id: number) {
+  const res = await http.get<ApiResponse<PhongDto>>(`/api/phong/${id}`)
+  return unwrapApiResponse(res.data)
+}
+
 export async function createPhong(body: UpsertPhongRequest) {
   const res = await http.post<ApiResponse<PhongDto>>('/api/phong', body)
   return unwrapApiResponse(res.data)
