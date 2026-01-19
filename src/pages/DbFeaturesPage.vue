@@ -10,11 +10,11 @@
         <div>
           Các thao tác nghiệp vụ được đóng gói dưới dạng procedure:
           <ul style="margin: 8px 0 0; padding-left: 18px">
-            <li><b>sp_datPhong</b>: tạo đơn đặt phòng</li>
-            <li><b>sp_themChiTietDatPhong</b>: thêm chi tiết + tính số ngày thuê</li>
+            <li><b>sp_datPhongNhanh</b>: tạo đơn đặt phòng + tự thêm chi tiết theo danh sách phòng</li>
+            <li><b>sp_nhanPhong</b>: nhận phòng (check-in)</li>
             <li><b>sp_traPhong</b>: trả phòng</li>
             <li><b>sp_phongTrong</b>: lấy danh sách phòng trống</li>
-            <li><b>sp_phongDaDat</b>: lấy danh sách phòng đã được đặt trong khoảng thời gian</li>
+            <li><b>sp_phongDaDatTheoKhoangThoiGian</b>: lấy danh sách phòng đã được đặt trong khoảng thời gian</li>
             <li><b>sp_tinhDoanhThuTheoThang</b>: tổng doanh thu theo tháng/năm</li>
           </ul>
           <div style="margin-top: 8px">
@@ -42,7 +42,7 @@
           <ul style="margin: 8px 0 0; padding-left: 18px">
             <li><b>fn_tinhSoNgayThue</b>: <code>datediff(day, NgayNhan, NgayTra)</code></li>
           </ul>
-          FE thể hiện gián tiếp qua thao tác <b>sp_themChiTietDatPhong</b> (procedure này gọi function để tính <code>SoNgay</code>).
+          FE thể hiện gián tiếp qua thao tác <b>sp_datPhongNhanh</b> (procedure này gọi function để tính <code>SoNgay</code>).
         </div>
       </el-timeline-item>
 

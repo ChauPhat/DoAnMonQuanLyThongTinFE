@@ -1,26 +1,37 @@
 import { http, unwrapApiResponse } from './http'
 import type { ApiResponse } from './types'
 import type {
-  DatPhongRequest,
+  DatPhongNhanhRequest,
+  DatPhongSummaryDto,
   DoanhThuTheoThangRequest,
+  NhanPhongRequest,
   PhongDaDatRequest,
   PhongDto,
-  ThemChiTietDatPhongRequest,
   TraPhongRequest,
 } from './models'
 
-export async function procDatPhong(body: DatPhongRequest) {
-  const res = await http.post<ApiResponse<number>>('/api/proc/dat-phong', body)
+export async function procDanhSachDatPhong(params?: { limit?: number; q?: string | null }) {
+  const res = await http.get<ApiResponse<DatPhongSummaryDto[]>>('/api/proc/danh-sach-dat-phong', { params })
   return unwrapApiResponse(res.data)
 }
 
-export async function procThemChiTiet(body: ThemChiTietDatPhongRequest) {
-  const res = await http.post<ApiResponse<void>>('/api/proc/them-chi-tiet', body)
+export async function procThongTinDatPhong(maDatPhong: number) {
+  const res = await http.get<ApiResponse<DatPhongSummaryDto>>(`/api/proc/dat-phong/${maDatPhong}`)
+  return unwrapApiResponse(res.data)
+}
+
+export async function procDatPhongNhanh(body: DatPhongNhanhRequest) {
+  const res = await http.post<ApiResponse<number>>('/api/proc/dat-phong-nhanh', body)
   return unwrapApiResponse(res.data)
 }
 
 export async function procTraPhong(body: TraPhongRequest) {
   const res = await http.post<ApiResponse<void>>('/api/proc/tra-phong', body)
+  return unwrapApiResponse(res.data)
+}
+
+export async function procNhanPhong(body: NhanPhongRequest) {
+  const res = await http.post<ApiResponse<void>>('/api/proc/nhan-phong', body)
   return unwrapApiResponse(res.data)
 }
 

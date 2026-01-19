@@ -30,11 +30,12 @@ export type NhanVienDto = {
   username?: string | null
 }
 
-export type DatPhongRequest = {
+export type DatPhongNhanhRequest = {
   maKh: number
   maNv: number
   ngayNhan: string // LocalDateTime string: yyyy-MM-ddTHH:mm:ss
   ngayTra: string
+  maPhong: number[]
 }
 
 export type CreateNhanVienRequest = {
@@ -51,13 +52,11 @@ export type UpdateNhanVienRequest = {
   password?: string | null
 }
 
-export type ThemChiTietDatPhongRequest = {
+export type TraPhongRequest = {
   maDatPhong: number
-  maPhong: number
-  donGia: number
 }
 
-export type TraPhongRequest = {
+export type NhanPhongRequest = {
   maDatPhong: number
 }
 
@@ -70,3 +69,7 @@ export type PhongDaDatRequest = {
   tuNgay: string // LocalDateTime string: yyyy-MM-ddTHH:mm:ss
   denNgay: string
 }
+
+export type DatPhongSummaryDto = {
+  maDatPhong: number
+} & Record<string, unknown>
