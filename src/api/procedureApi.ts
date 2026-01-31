@@ -1,6 +1,7 @@
 import { http, unwrapApiResponse } from './http'
 import type { ApiResponse } from './types'
 import type {
+  BaoCaoDoanhThuCursorDto,
   DatPhongNhanhRequest,
   DatPhongSummaryDto,
   DoanhThuTheoThangRequest,
@@ -17,6 +18,11 @@ export async function procDanhSachDatPhong(params?: { limit?: number; q?: string
 
 export async function procThongTinDatPhong(maDatPhong: number) {
   const res = await http.get<ApiResponse<DatPhongSummaryDto>>(`/api/proc/dat-phong/${maDatPhong}`)
+  return unwrapApiResponse(res.data)
+}
+
+export async function procBaoCaoDoanhThuCursor() {
+  const res = await http.get<ApiResponse<BaoCaoDoanhThuCursorDto[]>>('/api/proc/bao-cao-doanh-thu-cursor')
   return unwrapApiResponse(res.data)
 }
 

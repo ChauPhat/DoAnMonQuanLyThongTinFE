@@ -53,7 +53,7 @@
             <li><b>sp_baoCaoDoanhThu_cursor</b>: dùng cursor duyệt từng đơn đặt phòng và <code>PRINT</code> tổng tiền</li>
           </ul>
           <div class="muted" style="margin-top: 6px">
-            Hiện cursor đang <code>PRINT</code> nên FE không đọc được. Nếu bạn thêm API trả về danh sách report (thay vì PRINT), mình sẽ làm thêm 1 tab “Cursor report” cho chuẩn bài báo cáo.
+            Backend đã expose report qua API <b>/api/proc/bao-cao-doanh-thu-cursor</b>, FE hiển thị trong màn Demo procedure.
           </div>
         </div>
       </el-timeline-item>

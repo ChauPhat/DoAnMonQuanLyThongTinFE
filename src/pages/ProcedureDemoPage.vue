@@ -5,6 +5,7 @@ import { ElMessage } from 'element-plus'
 
 import { getErrorMessage } from '../api/http'
 import type {
+  BaoCaoDoanhThuCursorDto,
   DatPhongNhanhRequest,
   DoanhThuTheoThangRequest,
   KhachHangDto,
@@ -17,6 +18,7 @@ import type {
 import { listKhachHang } from '../api/khachHangApi'
 import { listNhanVien } from '../api/nhanVienApi'
 import {
+  procBaoCaoDoanhThuCursor,
   procDatPhongNhanh,
   procDanhSachDatPhong,
   procDoanhThu,
@@ -42,6 +44,9 @@ const phongTrong = ref<PhongDto[]>([])
 
 const loadingPhongDaDat = ref(false)
 const phongDaDat = ref<PhongDto[]>([])
+
+const loadingBaoCaoCursor = ref(false)
+const baoCaoCursor = ref<BaoCaoDoanhThuCursorDto[]>([])
 
 const datPhongForm = reactive<{
   maKh: number | null
@@ -194,6 +199,27 @@ function phongLabel(p: PhongDto): string {
   const ten = p.tenPhong ?? 'Phòng'
   const tang = p.tang != null ? `Tầng ${p.tang}` : ''
   return `${ten} (#${p.maPhong})${tang ? ` - ${tang}` : ''}`
+}
+
+function formatLocalDateTime(value: unknown): string {
+  if (typeof value !== 'string' || !value.trim()) return ''
+  const d = dayjs(value)
+  if (!d.isValid()) return value
+  return d.format('DD/MM/YYYY HH:mm')
+}
+
+function formatVnd(value: unknown): string {
+  const n = typeof value === 'number' ? value : Number(String(value ?? '').trim())
+  if (!Number.isFinite(n)) return String(value ?? '')
+  return `${new Intl.NumberFormat('vi-VN').format(n)} ₫`
+}
+
+function formatNgayDatColumn(_row: unknown, _column: unknown, cellValue: unknown): string {
+  return formatLocalDateTime(cellValue)
+}
+
+function formatTongTienColumn(_row: unknown, _column: unknown, cellValue: unknown): string {
+  return formatVnd(cellValue)
 }
 
 async function loadKhachHangOptions() {
@@ -349,6 +375,17 @@ async function runPhongDaDat() {
     ElMessage.error(getErrorMessage(e))
   } finally {
     loadingPhongDaDat.value = false
+  }
+}
+
+async function loadBaoCaoDoanhThuCursor() {
+  loadingBaoCaoCursor.value = true
+  try {
+    baoCaoCursor.value = await procBaoCaoDoanhThuCursor()
+  } catch (e) {
+    ElMessage.error(getErrorMessage(e))
+  } finally {
+    loadingBaoCaoCursor.value = false
   }
 }
 
@@ -552,6 +589,21 @@ onMounted(async () => {
             <el-tag type="success">{{ doanhThuValue }}</el-tag>
           </el-form-item>
         </el-form>
+      </el-tab-pane>
+
+      <el-tab-pane label="Báo cáo doanh thu (CURSOR)">
+        <div style="margin-bottom: 8px">
+          <el-button type="primary" @click="loadBaoCaoDoanhThuCursor">Tải báo cáo cursor</el-button>
+        </div>
+
+        <el-table :data="baoCaoCursor" v-loading="loadingBaoCaoCursor" border style="width: 100%">
+          <el-table-column prop="maDatPhong" label="Mã đặt" width="90" />
+          <el-table-column prop="maKh" label="Mã KH" width="80" />
+          <el-table-column prop="hoTenKh" label="Họ tên" min-width="200" />
+          <el-table-column prop="ngayDat" label="Ngày đặt" min-width="180" :formatter="formatNgayDatColumn" />
+          <el-table-column prop="trangThai" label="Trạng thái" width="140" />
+          <el-table-column prop="tongTien" label="Tổng tiền" width="160" :formatter="formatTongTienColumn" />
+        </el-table>
       </el-tab-pane>
     </el-tabs>
 

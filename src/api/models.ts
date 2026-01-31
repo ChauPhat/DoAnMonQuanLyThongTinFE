@@ -73,3 +73,12 @@ export type PhongDaDatRequest = {
 export type DatPhongSummaryDto = {
   maDatPhong: number
 } & Record<string, unknown>
+
+export type BaoCaoDoanhThuCursorDto = {
+  maDatPhong: number
+  maKh: number
+  hoTenKh: string
+  ngayDat: string // LocalDateTime
+  trangThai: string
+  tongTien: number | string
+}
