@@ -7,6 +7,10 @@ import {
   OfficeBuilding,
   User,
   SetUp,
+  Lock,
+  Document,
+  List,
+  Tickets,
 } from '@element-plus/icons-vue'
 
 const route = useRoute()
@@ -17,6 +21,10 @@ const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
 const items = [
   { index: '/', label: 'Dashboard', icon: DataAnalysis },
   { index: '/db-features', label: 'Database Features', icon: Collection },
+  { index: '/system-functions', label: 'Chức năng hệ thống', icon: Tickets },
+  { index: '/reports', label: 'Report (5)', icon: List },
+  { index: '/an-toan-thong-tin', label: 'An toàn thông tin', icon: Lock },
+  { index: '/sql-script', label: 'SQL Script', icon: Document },
   { index: '/khach-hang', label: 'Khách Hàng', icon: User },
   { index: '/nhan-vien', label: 'Nhân Viên', icon: User },
   { index: '/loai-phong', label: 'Loại Phòng', icon: OfficeBuilding },

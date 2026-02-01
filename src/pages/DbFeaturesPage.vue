@@ -1,9 +1,39 @@
 <script setup lang="ts">
+import SqlPreview from '../components/SqlPreview.vue'
+
+const sqlOverview = [
+  '-- SQL minh hoạ (hiển thị trực tiếp trên website)',
+  '-- Stored Procedure (5):',
+  "EXEC dbo.sp_datPhongNhanh @MaKH = ?, @MaNV = ?, @NgayNhan = ?, @NgayTra = ?, @DanhSachMaPhong = N'1,2,3', @MaDatPhong = @out OUTPUT;",
+  'EXEC dbo.sp_nhanPhong @MaDatPhong = ?;',
+  'EXEC dbo.sp_traPhong @MaDatPhong = ?;',
+  'EXEC dbo.sp_phongTrong;',
+  'EXEC dbo.sp_phongDaDatTheoKhoangThoiGian @TuNgay = ?, @DenNgay = ?;',
+  '',
+  '-- Function (3):',
+  'SELECT dbo.fn_tinhSoNgayThue(@NgayNhan, @NgayTra);',
+  'SELECT dbo.fn_tinhTongTienDatPhong(@MaDatPhong);',
+  'SELECT dbo.fn_isPhongTrongTheoKhoang(@MaPhong, @NgayNhan, @NgayTra);',
+  '',
+  '-- Cursor (2):',
+  'EXEC dbo.sp_baoCaoDoanhThu_cursor;',
+  'EXEC dbo.sp_baoCaoDoanhThu_cursor_report;',
+].join('\n')
 </script>
 
 <template>
   <div class="page-card">
     <h2 style="margin: 0 0 12px">Database Features (báo cáo)</h2>
+
+    <SqlPreview
+      title="SQL (hiển thị trực tiếp trên web)"
+      :sql="sqlOverview"
+      note="Chi tiết + tham số động nằm trong màn Demo Stored Procedure"
+    />
+
+    <div style="margin: 8px 0 14px">
+      <el-button @click="$router.push('/sql-script')">Mở toàn bộ file SQL</el-button>
+    </div>
 
     <el-timeline>
       <el-timeline-item timestamp="1) Stored Procedure" placement="top">
