@@ -580,7 +580,8 @@ async function openDatPhongDetail() {
 
 async function runDoanhThu() {
   try {
-    doanhThuValue.value = await procDoanhThu(doanhThuForm)
+    const v = await procDoanhThu(doanhThuForm)
+    doanhThuValue.value = (v as any) == null ? 0 : v
   } catch (e) {
     ElMessage.error(getErrorMessage(e))
   }

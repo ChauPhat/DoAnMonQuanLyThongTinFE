@@ -140,7 +140,8 @@ const nam = ref<number>(dayjs().year())
 async function runDoanhThu() {
   loadingDoanhThu.value = true
   try {
-    doanhThuValue.value = await procDoanhThu({ thang: thang.value, nam: nam.value })
+    const v = await procDoanhThu({ thang: thang.value, nam: nam.value })
+    doanhThuValue.value = (v as any) == null ? 0 : v
   } catch (e) {
     ElMessage.error(getErrorMessage(e))
   } finally {
