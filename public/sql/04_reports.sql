@@ -1,12 +1,6 @@
-/*
-  Reports (5) - Stored Procedures returning result sets
-  This file also grants EXECUTE to role_report.
-*/
-
 use ql_dat_phong;
 go
 
--- 1) Report: Doanh thu theo nam (group by thang)
 create or alter procedure dbo.sp_report_doanhThuTheoNam
     @Nam int
 as
@@ -26,7 +20,6 @@ begin
 end;
 go
 
--- 2) Report: Top khach hang theo tong chi tieu
 create or alter procedure dbo.sp_report_topKhachHang
     @Top int = 10
 as
@@ -50,7 +43,6 @@ begin
 end;
 go
 
--- 3) Report: Thong ke dat phong theo nhan vien trong khoang thoi gian
 create or alter procedure dbo.sp_report_datPhongTheoNhanVien
     @TuNgay datetime,
     @DenNgay datetime
@@ -80,7 +72,6 @@ begin
 end;
 go
 
--- 4) Report: Cong no / chua thanh toan
 create or alter procedure dbo.sp_report_congNo
 as
 begin
@@ -103,7 +94,6 @@ begin
 end;
 go
 
--- 5) Report: Cong suat / tinh trang phong theo khoang thoi gian
 create or alter procedure dbo.sp_report_congSuatPhong
     @TuNgay datetime,
     @DenNgay datetime
@@ -138,7 +128,6 @@ begin
 end;
 go
 
--- ===== Grants for report role =====
 grant execute on dbo.sp_report_doanhThuTheoNam to role_report;
 grant execute on dbo.sp_report_topKhachHang to role_report;
 grant execute on dbo.sp_report_datPhongTheoNhanVien to role_report;
@@ -146,7 +135,6 @@ grant execute on dbo.sp_report_congNo to role_report;
 grant execute on dbo.sp_report_congSuatPhong to role_report;
 go
 
--- Optional: allow staff to run reports too
 grant execute on dbo.sp_report_doanhThuTheoNam to role_staff;
 grant execute on dbo.sp_report_topKhachHang to role_staff;
 grant execute on dbo.sp_report_datPhongTheoNhanVien to role_staff;

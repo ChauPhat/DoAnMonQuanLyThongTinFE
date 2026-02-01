@@ -1,75 +1,84 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
+import { ElMessage } from 'element-plus'
+
 import SqlPreview from '../components/SqlPreview.vue'
 
-const sqlAuth = [
-  '-- Xác thực (minh hoạ cho SQL Server)',
-  '-- 1) Tạo login (SQL Authentication)',
-  "-- CREATE LOGIN ql_user WITH PASSWORD = 'StrongPassword#123';",
-  '-- 2) Tạo user trong database',
-  '-- USE ql_dat_phong;',
-  "-- CREATE USER ql_user FOR LOGIN ql_user;",
-  '',
-  '-- Lưu ý: project backend của bạn đang xác thực ở tầng API (Spring).',
-  '-- Nếu cần demo đăng nhập trên web, backend phải cung cấp endpoint /auth (JWT/session).',
-].join('\n')
+const loadingSecurity = ref(false)
+const loadingImportExport = ref(false)
+const loadingBackupRestore = ref(false)
 
-const sqlRole = [
-  '-- Phân quyền (Role/Grant) - minh hoạ',
-  '-- USE ql_dat_phong;',
-  '-- CREATE ROLE role_le_tan;',
-  '-- CREATE ROLE role_quan_ly;',
-  '',
-  '-- Ví dụ: lễ tân được xem/ghi đặt phòng, không được DROP',
-  '-- GRANT SELECT, INSERT, UPDATE ON dbo.dat_phong TO role_le_tan;',
-  '-- GRANT SELECT, INSERT, UPDATE ON dbo.chi_tiet_dat_phong TO role_le_tan;',
-  '-- GRANT SELECT ON dbo.phong TO role_le_tan;',
-  '',
-  '-- Gán user vào role',
-  '-- EXEC sp_addrolemember "role_le_tan", "ql_user";',
-].join('\n')
+const sqlSecurity = ref<string>('')
+const sqlImportExport = ref<string>('')
+const sqlBackupRestore = ref<string>('')
 
-const sqlImportExport = [
-  '-- Import/Export (minh hoạ)',
-  '-- Export (thường làm qua tooling/SSMS/SQLCMD/BCP):',
-  "-- bcp ql_dat_phong.dbo.khach_hang out C:\\backup\\khach_hang.csv -c -t, -T -S localhost",
-  '',
-  '-- Import (BULK INSERT):',
-  "-- BULK INSERT dbo.khach_hang",
-  "-- FROM 'C:\\backup\\khach_hang.csv'",
-  '-- WITH (FIRSTROW = 2, FIELDTERMINATOR = ",", ROWTERMINATOR = "\n", CODEPAGE = "65001");',
-].join('\n')
+async function loadSqlFile(path: string): Promise<string> {
+  const res = await fetch(path, { cache: 'no-store' })
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  return await res.text()
+}
 
-const sqlBackupRestore = [
-  '-- Backup/Restore (minh hoạ)',
-  "-- BACKUP DATABASE ql_dat_phong TO DISK = 'C:\\backup\\ql_dat_phong.bak' WITH INIT, STATS = 5;",
-  '',
-  '-- Restore (cần quyền sysadmin/dbcreator + database không đang sử dụng):',
-  "-- RESTORE DATABASE ql_dat_phong FROM DISK = 'C:\\backup\\ql_dat_phong.bak' WITH REPLACE, STATS = 5;",
-].join('\n')
+async function loadAll() {
+  loadingSecurity.value = true
+  loadingImportExport.value = true
+  loadingBackupRestore.value = true
+  try {
+    const [security, impExp, backupRestore] = await Promise.all([
+      loadSqlFile('/sql/02_security.sql'),
+      loadSqlFile('/sql/05_import_export.sql'),
+      loadSqlFile('/sql/03_backup_restore.sql'),
+    ])
+    sqlSecurity.value = security
+    sqlImportExport.value = impExp
+    sqlBackupRestore.value = backupRestore
+  } catch (e) {
+    ElMessage.error(`Không tải được file SQL an toàn thông tin: ${(e as any)?.message ?? 'lỗi'}`)
+  } finally {
+    loadingSecurity.value = false
+    loadingImportExport.value = false
+    loadingBackupRestore.value = false
+  }
+}
+
+onMounted(() => {
+  void loadAll()
+})
 </script>
 
 <template>
   <div class="page-card">
     <h2 style="margin: 0 0 8px">An toàn thông tin</h2>
     <div class="muted" style="margin-bottom: 12px">
-      Mục này trình bày trực tiếp các câu lệnh minh hoạ về xác thực, phân quyền, import/export, backup/restore.
+      Mục này trình bày trực tiếp các câu lệnh SQL (đọc từ thư mục <b>/public/sql/</b>) để demo ngay trên web.
+    </div>
+
+    <div class="page-actions" style="border-bottom: none; padding: 0 0 12px">
+      <div class="actions-left" />
+      <div class="actions-right">
+        <el-button size="small" @click="loadAll">Reload</el-button>
+      </div>
     </div>
 
     <el-tabs type="border-card">
-      <el-tab-pane label="Xác thực">
-        <SqlPreview title="SQL" :sql="sqlAuth" />
-      </el-tab-pane>
-
-      <el-tab-pane label="Phân quyền">
-        <SqlPreview title="SQL" :sql="sqlRole" />
+      <el-tab-pane label="Xác thực + Phân quyền">
+        <div v-loading="loadingSecurity" style="min-height: 120px">
+          <SqlPreview v-if="sqlSecurity" title="02_security.sql" :sql="sqlSecurity" />
+          <el-empty v-else description="Chưa có nội dung" />
+        </div>
       </el-tab-pane>
 
       <el-tab-pane label="Import / Export">
-        <SqlPreview title="SQL" :sql="sqlImportExport" />
+        <div v-loading="loadingImportExport" style="min-height: 120px">
+          <SqlPreview v-if="sqlImportExport" title="05_import_export.sql" :sql="sqlImportExport" />
+          <el-empty v-else description="Chưa có nội dung" />
+        </div>
       </el-tab-pane>
 
       <el-tab-pane label="Backup / Restore">
-        <SqlPreview title="SQL" :sql="sqlBackupRestore" />
+        <div v-loading="loadingBackupRestore" style="min-height: 120px">
+          <SqlPreview v-if="sqlBackupRestore" title="03_backup_restore.sql" :sql="sqlBackupRestore" />
+          <el-empty v-else description="Chưa có nội dung" />
+        </div>
       </el-tab-pane>
     </el-tabs>
   </div>
