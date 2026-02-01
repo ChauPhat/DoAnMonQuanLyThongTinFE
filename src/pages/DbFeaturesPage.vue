@@ -3,7 +3,7 @@ import SqlPreview from '../components/SqlPreview.vue'
 
 const sqlOverview = [
   '-- SQL minh hoạ (hiển thị trực tiếp trên website)',
-  '-- Stored Procedure (5):',
+  '-- Stored Procedure (5 – nghiệp vụ chính):',
   "EXEC dbo.sp_datPhongNhanh @MaKH = ?, @MaNV = ?, @NgayNhan = ?, @NgayTra = ?, @DanhSachMaPhong = N'1,2,3', @MaDatPhong = @out OUTPUT;",
   'EXEC dbo.sp_nhanPhong @MaDatPhong = ?;',
   'EXEC dbo.sp_traPhong @MaDatPhong = ?;',
@@ -45,10 +45,13 @@ const sqlOverview = [
             <li><b>sp_traPhong</b>: trả phòng</li>
             <li><b>sp_phongTrong</b>: lấy danh sách phòng trống</li>
             <li><b>sp_phongDaDatTheoKhoangThoiGian</b>: lấy danh sách phòng đã được đặt trong khoảng thời gian</li>
-            <li><b>sp_tinhDoanhThuTheoThang</b>: tổng doanh thu theo tháng/năm</li>
           </ul>
+          <div class="muted" style="margin-top: 6px">
+            Các procedure phục vụ báo cáo (doanh thu, danh sách đặt phòng, cursor) nằm trong menu <b>Report (5)</b>.
+          </div>
           <div style="margin-top: 8px">
             <el-button type="primary" @click="$router.push('/procedure-demo')">Mở demo procedure</el-button>
+            <el-button style="margin-left: 8px" @click="$router.push('/reports')">Mở report</el-button>
           </div>
         </div>
       </el-timeline-item>
