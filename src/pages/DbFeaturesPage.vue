@@ -62,6 +62,9 @@ const sqlOverview = [
           <ul style="margin: 8px 0 0; padding-left: 18px">
             <li><b>trg_tinhThanhTien</b> (chi_tiet_dat_phong): tự tính <code>ThanhTien = DonGia * SoNgay</code></li>
             <li><b>trg_capNhatTrangThaiPhong</b> (dat_phong): khi cập nhật <code>TrangThai = N'đã nhận phòng'</code> → cập nhật phòng thành <code>N'đang thuê'</code></li>
+            <li><b>trg_capNhatSoNgayChiTiet</b> (dat_phong): khi đổi <code>NgayNhan/NgayTra</code> → cập nhật <code>SoNgay</code>, <code>ThanhTien</code> cho chi tiết</li>
+            <li><b>trg_chanDatTrungPhong</b> (chi_tiet_dat_phong): chặn đặt trùng phòng theo khoảng thời gian (rollback)</li>
+            <li><b>trg_setNgayThanhToan</b> (thanh_toan): tự set <code>NgayThanhToan</code> khi <code>TrangThai = N'Đã thanh toán'</code></li>
           </ul>
           <div class="muted" style="margin-top: 6px">
             FE sẽ thể hiện bằng cách: thao tác qua màn Demo Stored Procedure → reload danh sách Phòng để quan sát trạng thái thay đổi.
@@ -74,8 +77,10 @@ const sqlOverview = [
           Function trả về giá trị:
           <ul style="margin: 8px 0 0; padding-left: 18px">
             <li><b>fn_tinhSoNgayThue</b>: <code>datediff(day, NgayNhan, NgayTra)</code></li>
+            <li><b>fn_tinhTongTienDatPhong</b>: tính tổng tiền theo <code>MaDatPhong</code> từ <code>chi_tiet_dat_phong</code></li>
+            <li><b>fn_isPhongTrongTheoKhoang</b>: kiểm tra phòng trống theo khoảng (không bảo trì + không overlap đặt phòng)</li>
           </ul>
-          FE thể hiện gián tiếp qua thao tác <b>sp_datPhongNhanh</b> (procedure này gọi function để tính <code>SoNgay</code>).
+          FE thể hiện gián tiếp qua thao tác <b>sp_datPhongNhanh</b> (procedure này gọi function để tính <code>SoNgay</code>) và các màn demo/report liên quan.
         </div>
       </el-timeline-item>
 
@@ -84,6 +89,7 @@ const sqlOverview = [
           Cursor dùng để duyệt từng dòng và xử lý:
           <ul style="margin: 8px 0 0; padding-left: 18px">
             <li><b>sp_baoCaoDoanhThu_cursor</b>: dùng cursor duyệt từng đơn đặt phòng và <code>PRINT</code> tổng tiền</li>
+            <li><b>sp_baoCaoDoanhThu_cursor_report</b>: dùng cursor và <b>trả result set</b> để website hiển thị (Report tab 5)</li>
           </ul>
           <div class="muted" style="margin-top: 6px">
             Backend đã expose report qua API <b>/api/proc/bao-cao-doanh-thu-cursor</b>, FE hiển thị trong màn Demo procedure.
